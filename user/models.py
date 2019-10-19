@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 
 class Profile(models.Model):
@@ -20,6 +21,11 @@ class Profile(models.Model):
         return "{}{}".format(self.user.first_name, self.user.last_name)
     
     def save(self, *args, **kwargs):
+        if not self.pk:
+            self.private_first_class = self.start_date + datetime.timedelta(month=2)
+            self.private_first_class.days = 1
+            self.corparal = self.private_first_class + datetime.timedelta(month=6)
+            self.sergeant = self.corparal + datetime.timedelta(month=6)
         super().save(*args, **kwargs)
         
 

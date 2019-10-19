@@ -28,4 +28,50 @@ def register(request):
         return Response({"message": "key error"}, status=status.HTTP_400_BAD_REQUEST)
 
     
+@api_view(['POST'])
+@authentication_classes((IsAuthenticated,))
+def info_register(request):
+    user = request.user
+    data = request.data
+    
+    if Profile.objects.filter(user=user).exists():
+        return Response({"message": "info already exists"}, status=status.HTTP_409_CONFLICT)
+    elif all(i in data for i in ('start_date', 'end_date', 'say')):
+        data['user'] = user
+        profile = Profile.objects.create(**data)
+        return Response(model_to_dict(profile), status=status.HTTP_201_CREATED)
+    else:
+        return Response({"message": "key error", status=status.HTTP_409_CONFLICT})
+
+
+@api_view(['GET', 'PUT'])
+@authentication_classes((IsAuthenticated,))
+def info(request):
+    user = request.user
+    try:
+        profile = Profile.objects.get(user=user)
+        if request.method == "GET":
+            return Response(model_to_dict(profile), status=status.HTTP_200_OK)
+        else:
+            fields = (
+                'start_date',
+                'end_date',
+                'private_first_class',
+                'corparal',
+                'sergeant',
+                'say',
+                'reqular_holiday',
+                'reward_holiday',
+                'consolation_holiday'
+            )
+
+            if any(i not in fields for i in data):
+                return Response({"message": "invaild fields", status=status.HTTP_400_BAD_REQUEST})
+            else:
+                profile.update(**data)
+                return Response({"message": "success"}, status=status.HTTP_202_ACCEPTED)
+
+    except Profile.DoesNotExist:
+        return Response({"message": "info does not exists", status=status.HTTP_404_NOT_FOUND})
+    
 
