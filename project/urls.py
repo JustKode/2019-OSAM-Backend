@@ -10,4 +10,5 @@ urlpatterns = [
     path('auth/refresh', refresh_jwt_token),
     path('user/', include('user.urls')),
     path('schedule/', include('schedule.urls')),
+    path('diary/', include('diary.urls'))
 ]
