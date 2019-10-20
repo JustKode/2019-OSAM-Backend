@@ -41,7 +41,7 @@ def info_register(request):
         profile = Profile.objects.create(**data)
         return Response(model_to_dict(profile), status=status.HTTP_201_CREATED)
     else:
-        return Response({"message": "key error", status=status.HTTP_409_CONFLICT})
+        return Response({"message": "key error"}, status=status.HTTP_409_CONFLICT)
 
 
 @api_view(['GET', 'PUT'])
@@ -66,12 +66,12 @@ def info(request):
             )
 
             if any(i not in fields for i in data):
-                return Response({"message": "invaild fields", status=status.HTTP_400_BAD_REQUEST})
+                return Response({"message": "invaild fields"}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 profile.update(**data)
                 return Response({"message": "success"}, status=status.HTTP_202_ACCEPTED)
 
     except Profile.DoesNotExist:
-        return Response({"message": "info does not exists", status=status.HTTP_404_NOT_FOUND})
+        return Response({"message": "info does not exists"}, status=status.HTTP_404_NOT_FOUND)
     
 

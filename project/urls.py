@@ -8,5 +8,6 @@ urlpatterns = [
     path('auth/', obtain_jwt_token),
     path('auth/verify', verify_jwt_token),
     path('auth/refresh', refresh_jwt_token),
-    path('user/', include('user.urls'))
+    path('user/', include('user.urls')),
+    path('schedule/', include('schedule.urls')),
 ]

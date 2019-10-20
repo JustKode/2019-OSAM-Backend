@@ -57,5 +57,4 @@ def post_schedule(request):
         return Response(result.data, status=status.HTTP_201_CREATED)
     
 
-
     
