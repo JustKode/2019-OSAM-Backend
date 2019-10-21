@@ -35,7 +35,7 @@ def register(request):
 
     
 @api_view(['POST'])
-@authentication_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def info_register(request):
     user = request.user
     data = request.data
@@ -51,13 +51,14 @@ def info_register(request):
 
 
 @api_view(['GET', 'PUT'])
-@authentication_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def info(request):
     user = request.user
+    data = request.data
     try:
-        profile = Profile.objects.get(user=user)
+        profile = Profile.objects.filter(user=user)
         if request.method == "GET":
-            return Response(model_to_dict(profile), status=status.HTTP_200_OK)
+            return Response(model_to_dict(profile[0]), status=status.HTTP_200_OK)
         else:
             fields = (
                 'start_date',
