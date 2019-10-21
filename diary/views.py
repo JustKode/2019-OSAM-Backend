@@ -12,25 +12,32 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
 @api_view(['GET'])
-@authentication_classes((IsAuthenticated,))
-def get_diary_list(request, year=date.today().day, month=date.today().month):
+@permission_classes((IsAuthenticated,))
+def get_diary_list(request, year=date.today().year, month=date.today().month):
     user = request.user
-    diary_list = Diary.objects.filter(user=user).order_by('written')
-    result = DiarySimpleSerializer(diary_list)
+    diary_list = Diary.objects.filter(
+        user=user,
+        written__year__gte=year,
+        written__month__gte=month,
+        written__year__lte=year,
+        written__month__lte=month
+    ).order_by('written')
+    result = DiarySimpleSerializer(diary_list, many=True)
     
     return Response(result.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@authentication_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def diary(request, pk):
     user = request.user
-    diary = Diary.objects.get(id=pk)
+    data = request.data
+    diary = Diary.objects.filter(id=pk)
     if diary.user != user:
         return Response({"message": "user does not match"}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'GET':
-        result = DiarySerializer(diary)
+        result = DiarySerializer(diary[0])
         return Response(result.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
         fields = ('title', 'content')
@@ -38,8 +45,8 @@ def diary(request, pk):
         if any(i not in fields for i in data):
             return Response({"message": "invalid fields"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            diary = diary.update(**request.data)
-            result = DiarySerializer(diary)
+            diary.update(**data)
+            result = DiarySerializer(diary[0])
             return Response(result.data, status=status.HTTP_202_ACCEPTED)
     else:
         diary.delete()
@@ -47,9 +54,10 @@ def diary(request, pk):
     
 
 @api_view(['POST'])
-@authentication_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def post_diary(request):
     user = request.user
+    data = request.data
     if all(i in data for i in ('schedule_type', 'title', 'content', 'start_date', 'end_date')):
         data['user'] = user
         diary = Diary.objects.create(**data)
