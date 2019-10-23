@@ -71,7 +71,7 @@ def info(request):
                 'corparal',
                 'sergeant',
                 'say',
-                'reqular_holiday',
+                'regular_holiday',
                 'reward_holiday',
                 'consolation_holiday'
             )
