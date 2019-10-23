@@ -62,7 +62,7 @@ def info(request):
             result = model_to_dict(profile)
             result['first_name'] = user.first_name
             result['last_name'] = user.last_name
-            return Response(model_to_dict(result), status=status.HTTP_200_OK)
+            return Response(result, status=status.HTTP_200_OK)
         else:
             fields = (
                 'start_date',
