@@ -58,6 +58,9 @@ def info(request):
     try:
         profile = Profile.objects.filter(user=user)
         
+        if profile.count() == 0:
+            return Response({"message": "Can't find info"}, status=status.HTTP_404_NOT_FOUND)
+
         if request.method == "GET":
             result = model_to_dict(profile[0])
             result['first_name'] = user.first_name
