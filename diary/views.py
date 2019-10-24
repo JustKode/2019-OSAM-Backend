@@ -58,11 +58,15 @@ def diary(request, pk):
 def post_diary(request):
     user = request.user
     data = request.data
+
     if all(i in data for i in ('content', 'written')):
-        data['user'] = user
-        diary = Diary.objects.create(**data)
-        result = DiarySerializer(diary)
-        return Response(result.data, status=status.HTTP_201_CREATED)
+        if Diary.objects.filter(user=user, written=data['written']).count() != 0:
+            return Response({"message": "Diary already exists"}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            data['user'] = user
+            diary = Diary.objects.create(**data)
+            result = DiarySerializer(diary)
+            return Response(result.data, status=status.HTTP_201_CREATED)
     
 
     

@@ -12,3 +12,6 @@ class Diary(models.Model):
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = (("user", "written"),)
