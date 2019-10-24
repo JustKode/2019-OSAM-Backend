@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Diary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    written = models.DateField()
+    written = models.DateField(auto_now_add=True)
     title = models.CharField(max_length=128)
     summary = models.CharField(max_length=256)
     content = models.TextField()

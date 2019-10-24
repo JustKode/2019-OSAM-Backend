@@ -40,7 +40,7 @@ def diary(request, pk):
         result = DiarySerializer(diary[0])
         return Response(result.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        fields = ('title', 'content')
+        fields = ('title', 'content', 'written')
 
         if any(i not in fields for i in data):
             return Response({"message": "invalid fields"}, status=status.HTTP_400_BAD_REQUEST)

@@ -1,6 +1,7 @@
-from datetime import date
+from datetime import date, timedelta
 from django.shortcuts import render
 from django.core import serializers
+from django.db.models import Q
 from django.contrib.auth.models import User
 from schedule.models import Schedule
 from schedule.serializer import *
@@ -24,6 +25,21 @@ def get_schedule_list(request, year=date.today().year, month=date.today().month)
     ).order_by('start_date')
     result = ScheduleSimpleSerializer(schedule_list, many=True)
     
+    return Response(result.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_near_schedule(request):
+    user = request.user
+    today = date.today()
+    tomorrow = today + timedelta(days=1)
+    schedule_list = Schedule.objects.filter(
+        Q(start_date__range=[today.__str__, tomorrow__str__]) | 
+        Q(end_date__range=[today.__str__, tomorrow__str__])
+    ).order_by('-start_date')
+    result = ScheduleSimpleSerializer(schedule_list, many=True)
+
     return Response(result.data, status=status.HTTP_200_OK)
 
 
