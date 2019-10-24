@@ -8,7 +8,7 @@ class Diary(models.Model):
     content = models.TextField()
     
     def __str__(self):
-        return "{}{} - {}".format(self.user.first_name, self.user.last_name, self.title)
+        return "{}{} - {}".format(self.user.first_name, self.user.last_name, self.written)
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
