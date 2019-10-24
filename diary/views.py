@@ -58,8 +58,8 @@ def diary(request, pk):
 def getDiaryByDate(request, year, month, day):
     user = request.user
     data = request.data
-    date = date(year, month, day)
-    diary = Diary.objects.filter(user=user, written=date)
+    written = date(year, month, day)
+    diary = Diary.objects.filter(user=user, written=written)
     
     if diary.count() != 0:
         result = DiarySerializer(diary[0])
