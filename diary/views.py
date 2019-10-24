@@ -53,6 +53,22 @@ def diary(request, pk):
         return Response({"message": "success"}, status=status.HTTP_202_ACCEPTED)
     
 
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def getDiaryByDate(request, year, month, day):
+    user = request.user
+    data = request.data
+    date = date(year, month, day)
+    diary = Diary.objects.filter(user=user, written=date)
+    
+    if diary.count() != 0:
+        result = DiarySerializer(diary[0])
+        return Response(result.data, status=status.HTTP_200_OK)
+    else:
+        return Response({"message": "can't find diary"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def post_diary(request):
