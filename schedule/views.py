@@ -35,8 +35,8 @@ def get_near_schedule(request):
     today = date.today()
     tomorrow = today + timedelta(days=1)
     schedule_list = Schedule.objects.filter(
-        Q(start_date__range=[today.__str__, tomorrow__str__]) | 
-        Q(end_date__range=[today.__str__, tomorrow__str__])
+        Q(start_date__range=[today.__str__, tomorrow.__str__]) | 
+        Q(end_date__range=[today.__str__, tomorrow.__str__])
     ).order_by('-start_date')
     result = ScheduleSimpleSerializer(schedule_list, many=True)
 
