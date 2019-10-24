@@ -33,7 +33,7 @@ def diary(request, pk):
     user = request.user
     data = request.data
     diary = Diary.objects.filter(id=pk)
-    if diary.user != user:
+    if diary[0].user != user:
         return Response({"message": "user does not match"}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'GET':
@@ -45,6 +45,7 @@ def diary(request, pk):
         if any(i not in fields for i in data):
             return Response({"message": "invalid fields"}, status=status.HTTP_400_BAD_REQUEST)
         else:
+            data['user'] = user
             diary.update(**data)
             result = DiarySerializer(diary[0])
             return Response(result.data, status=status.HTTP_202_ACCEPTED)
@@ -76,6 +77,7 @@ def post_diary(request):
     data = request.data
 
     if all(i in data for i in ('content', 'written')):
+        print(data['written'])
         if Diary.objects.filter(user=user, written=data['written']).count() != 0:
             return Response({"message": "Diary already exists"}, status=status.HTTP_403_FORBIDDEN)
         else:

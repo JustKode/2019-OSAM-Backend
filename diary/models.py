@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Diary(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    written = models.DateField(auto_now_add=True)
+    written = models.DateField()
     content = models.TextField()
     
     def __str__(self):
@@ -14,4 +14,4 @@ class Diary(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        unique_together = (("user", "written"),)
+        unique_together = ('user', 'written')

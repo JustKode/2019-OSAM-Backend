@@ -35,6 +35,7 @@ def get_near_schedule(request):
     today = date.today()
     tomorrow = today + timedelta(days=1)
     schedule_list = Schedule.objects.filter(
+        Q(user=user) &
         Q(start_date__lte=tomorrow.__str__()) &
         Q(end_date__gte=today.__str__())
     ).order_by('start_date')
