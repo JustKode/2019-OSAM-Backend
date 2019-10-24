@@ -22,7 +22,7 @@ def get_diary_list(request, year=date.today().year, month=date.today().month):
         written__year__lte=year,
         written__month__lte=month
     ).order_by('written')
-    result = DiarySimpleSerializer(diary_list, many=True)
+    result = DiarySerializer(diary_list, many=True)
     
     return Response(result.data, status=status.HTTP_200_OK)
 
@@ -40,7 +40,7 @@ def diary(request, pk):
         result = DiarySerializer(diary[0])
         return Response(result.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        fields = ('title', 'content', 'written')
+        fields = ('content')
 
         if any(i not in fields for i in data):
             return Response({"message": "invalid fields"}, status=status.HTTP_400_BAD_REQUEST)
@@ -58,7 +58,7 @@ def diary(request, pk):
 def post_diary(request):
     user = request.user
     data = request.data
-    if all(i in data for i in ('schedule_type', 'title', 'content', 'start_date', 'end_date')):
+    if all(i in data for i in ('content', 'written')):
         data['user'] = user
         diary = Diary.objects.create(**data)
         result = DiarySerializer(diary)
